@@ -4,7 +4,7 @@ presencial
 8, 4
 Sala13 do CT 13
 videoconferencia
-14, 7
+12, 7
 Google Meet
 meet.google.com/svf-qkcy-tiy
 15

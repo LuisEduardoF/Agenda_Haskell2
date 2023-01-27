@@ -1,9 +1,17 @@
 module Calendar where
+import Util
 
-import Schedule
+getBissexto (a, _) = a
+getCalendario (_, a) = a
+getMes ns mes = ns!!(mes-1)
+isDiaNaoUtil [] dia_n = False
+isDiaNaoUtil (x:xs) dia_n | x == dia_n = True
+                          | otherwise = isDiaNaoUtil xs dia_n
 
-getInt :: String -> Int
-getInt str = read str
+checkDiaUtil mes_n dia_n calendario = do
+    let cal = getCalendario calendario
+    
+    not (isDiaNaoUtil (getMes cal mes_n) dia_n)
 
 format_calendario (x : xs) = do
     let bissexto = read x :: Bool

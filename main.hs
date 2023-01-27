@@ -1,5 +1,10 @@
+module Main where 
+
+import OP
+import Util
 import Calendar
-import Schedule
+import Agenda
+import BST
 
 menu = do
     putStrLn ("0 – Sair")
@@ -17,29 +22,33 @@ menu = do
     let option = getInt option_text
 
     return option
+option_switch option bst calendario | option == 0 = exit bst
+                                    | option == 1 = do_reload_agenda 
+                                    | option == 2 = do_is_free bst calendario
+                                    | option == 3 = do_insercao_compromisso bst calendario
+                                    --   | option == 4 = do_insercao_compromisso_breve bst calendario
+                                    --   | option == 5 = do_insercao_compromisso_minimo bst calendario
+                                    --   | option == 6 = do_insercao_compromisso_maximo bst calendario
+                                    | option == 7 = do_cancelamento_compromisso bst calendario
+                                    --   | option == 8 = do_reagendamento_compromisso bst calendario
+                                    --   | option == 9 = write_bst bst
+                                    | otherwise = return (BST bst)
 
-option_switch option bst calendario | option == 0 = return bst
-                                    --   | option == 1 = read_agenda
-                                    --   | option == 2 = do_is_free agenda calendario
-                                    --   | option == 3 = do_insercao_compromisso agenda calendario
-                                    --   | option == 4 = do_insercao_compromisso_breve agenda calendario
-                                    --   | option == 5 = do_insercao_compromisso_minimo agenda calendario
-                                    --   | option == 6 = do_insercao_compromisso_maximo agenda calendario
-                                    --   | option == 7 = do_cancelamento_compromisso agenda calendario
-                                    --   | option == 8 = do_reagendamento_compromisso agenda calendario
-                                    --   | option == 9 = write_agenda agenda
-                                    --   | otherwise = return agenda
-
-main_loop bst calendario = do
+main_loop (BST bst) calendario = do
     option <- menu
     
     newBst <- option_switch option bst calendario
-
-    -- main_loop newBst calendario
-    return newBst
+    if (newBst == (Bool True) || newBst == (Bool False)) then do
+        putStrLn (show(newBst))
+        main_loop (BST bst) calendario
+    else if(newBst == Exit) then do
+        return Exit
+    else do
+        putStrLn (show(newBst))
+        main_loop newBst calendario
 
 main = do
-    agenda <- read_agenda
     calendario <- read_calendario
-    main_loop agenda calendario
+    bst <- do_reload_agenda
+    main_loop bst calendario
     return 0
