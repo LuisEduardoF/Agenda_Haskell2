@@ -26,11 +26,11 @@ option_switch option bst calendario | option == 0 = exit bst
                                     | option == 1 = do_reload_agenda 
                                     | option == 2 = do_is_free bst calendario
                                     | option == 3 = do_insercao_compromisso bst calendario
-                                    --   | option == 4 = do_insercao_compromisso_breve bst calendario
+                                    | option == 4 = do_insercao_compromisso_breve bst calendario
                                     --   | option == 5 = do_insercao_compromisso_minimo bst calendario
                                     --   | option == 6 = do_insercao_compromisso_maximo bst calendario
                                     | option == 7 = do_cancelamento_compromisso bst calendario
-                                    --   | option == 8 = do_reagendamento_compromisso bst calendario
+                                    | option == 8 = do_reagendamento_compromisso bst calendario
                                     --   | option == 9 = write_bst bst
                                     | otherwise = return (BST bst)
 

@@ -59,9 +59,9 @@ instance Eq Schedule where
             False -> False
             True -> case (==) (day d1) (day d2) of
                 False -> False
-                True -> case ((<) d1 d2) || ((>) d1 d2) of
-                    True -> False
-                    False -> True
+                True -> case (==) (start d1) (start d2) of
+                    False -> False
+                    True -> True
     
 end :: Schedule -> Int
 end schedule = (start schedule) + (duration schedule)
@@ -74,6 +74,13 @@ read_cmp_v_agenda (x:y:z:xs) mes dia type_cmp agenda = do
     let link = z
 
     return (xs, ScheduleV { month = mes, day = dia, start = horario_ini, duration = duration, local = local, link = link})
+
+read_cmp_agenda (x:xs) mes dia agenda = do
+    let compromisso = wordsWhen (==',') x
+    let horario_ini = read (compromisso!!0) :: Int
+    let duration = read (compromisso!!1) :: Int
+
+    return (xs, Schedule { month = mes, day = dia, start = horario_ini, duration = duration})
 
 read_cmp_p_agenda (x:y:xs) mes dia type_cmp agenda = do
     let compromisso = wordsWhen (==',') x
@@ -94,7 +101,11 @@ read_cmp_type_agenda (x:xs) mes dia agenda = do
             (ns, cmp) <- read_cmp_v_agenda xs mes dia type_cmp agenda
             read_cmp_type_agenda ns mes dia (agenda ++ [cmp])
         else do
-            return (x:xs, agenda)
+            if(charFound ',' x) then do
+                (ns, cmp) <- read_cmp_agenda (x:xs) mes dia agenda
+                read_cmp_type_agenda ns mes dia (agenda ++ [cmp])
+            else
+                return (x:xs, agenda)
     else do
         return (x:xs, agenda)
 

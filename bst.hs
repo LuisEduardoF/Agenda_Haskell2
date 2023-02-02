@@ -26,7 +26,6 @@ deleteSchedule schedule (Node node left right)
     | schedule < node = Node node (deleteSchedule schedule left) right
     | otherwise = Node node left (deleteSchedule schedule right)
 
-
 deleteRoot :: BSTSchedule -> BSTSchedule
 deleteRoot (Node _ Empty right) = right
 deleteRoot (Node _ left Empty) = left
@@ -37,6 +36,9 @@ findMin :: BSTSchedule -> Schedule
 findMin (Node schedule Empty _) = schedule
 findMin (Node _ left _) = findMin left
 
+inOrder :: BSTSchedule -> [Schedule]
+inOrder Empty = []
+inOrder (Node a left right) = inOrder left ++ [a] ++ inOrder right
 
 end :: Schedule -> Int
 end schedule = (start schedule) + (duration schedule)

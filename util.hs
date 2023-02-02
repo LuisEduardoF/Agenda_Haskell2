@@ -20,5 +20,10 @@ is_horario_comercial :: Int -> Bool
 is_horario_comercial horario_ini = (horario_ini) `elem` getHorarioComercial
 
 is_valid_compromisso :: Int -> Int -> Bool
-is_valid_compromisso horario_ini duracao = (horario_ini + duracao) <= 18
+is_valid_compromisso horario_ini duracao = (horario_ini + duracao) <= 18 && (is_horario_comercial horario_ini) && (if ((horario_ini) `elem` getTurnoManha) then (horario_ini + duracao) <= 12 else True)
+
+charFound c [] = False
+charFound c (x:xs)
+    | c == x = True
+    | otherwise = charFound c xs
 
