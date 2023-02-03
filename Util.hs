@@ -26,4 +26,10 @@ charFound c [] = False
 charFound c (x:xs)
     | c == x = True
     | otherwise = charFound c xs
+    
+percorre [] = ""
+percorre (x:xs) = x ++ "\n" ++ percorre xs
 
+format_file [] = ""
+format_file [x] = percorre x
+format_file (x:xs) = percorre x ++ "\n" ++ format_file xs

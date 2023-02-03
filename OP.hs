@@ -4,6 +4,7 @@ import BST
 import Util
 import Agenda
 import Calendar
+import Data.List
 
 data Result = Bool Bool | Save | Exit | BST BSTSchedule deriving (Eq, Show)
 
@@ -186,3 +187,14 @@ do_cancelamento_compromisso bst calendario = do
 
     return (BST (deleteSchedule (Schedule {month = mes_n, day = dia_n, start = horario_ini, duration = 0}) bst))
 
+-- Gravar Agenda
+write_schedule [] mes dia = ""
+write_schedule (x:xs) mes dia | (month x) /= mes = (if (mes /= 0) then "\n" else "") ++ show (month x) ++ "\n" ++ (write_schedule (x:xs) (month x) dia)
+                              | (day x)   /= dia = show (day x) ++ "\n" ++ (write_schedule (x:xs) mes (day x))
+                              | otherwise = show (start x) ++ "," ++ show (duration x) ++ "\n" ++ (write_schedule xs mes dia)
+write_agenda (BST bst) = do
+    let agenda = inOrder bst
+    
+    writeFile "agenda2.txt" (write_schedule agenda 0 0)
+
+    return agenda
