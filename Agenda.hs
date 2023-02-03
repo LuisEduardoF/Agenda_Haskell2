@@ -3,7 +3,7 @@ module Agenda where
 import Util
 import Calendar
 
-data Schedule = ScheduleV { month :: Int, day :: Int, start :: Int, duration :: Int, local :: String, link :: String} | ScheduleP { month :: Int, day :: Int, start :: Int, duration :: Int, local :: String} | Schedule { month :: Int, day :: Int, start :: Int, duration :: Int} deriving (Show)
+data Schedule = ScheduleV { month :: Int, day :: Int, start :: Int, duration :: Int, t :: String, local :: String, link :: String} | ScheduleP { month :: Int, day :: Int, start :: Int, duration :: Int,  t :: String, local :: String} | Schedule { month :: Int, day :: Int, start :: Int, duration :: Int} deriving (Show)
 
 instance Ord Schedule where
     (<) d1 d2 =
@@ -73,7 +73,7 @@ read_cmp_v_agenda (x:y:z:xs) mes dia type_cmp agenda = do
     let local = y
     let link = z
 
-    return (xs, ScheduleV { month = mes, day = dia, start = horario_ini, duration = duration, local = local, link = link})
+    return (xs, ScheduleV { month = mes, day = dia, start = horario_ini, duration = duration, t = "videoconferencia", local = local, link = link})
 
 read_cmp_agenda (x:xs) mes dia agenda = do
     let compromisso = wordsWhen (==',') x
@@ -88,7 +88,7 @@ read_cmp_p_agenda (x:y:xs) mes dia type_cmp agenda = do
     let duration = read (compromisso!!1) :: Int
     let local = y
 
-    return (xs, ScheduleP { month = mes, day = dia, start = horario_ini, duration = duration, local = local})
+    return (xs, ScheduleP { month = mes, day = dia, start = horario_ini, duration = duration, t = "presencial", local = local})
 
 read_cmp_type_agenda [] mes dia agenda = return ([], agenda)
 read_cmp_type_agenda (x:xs) mes dia agenda = do

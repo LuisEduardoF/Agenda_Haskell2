@@ -24,3 +24,5 @@ read_calendario = do
     let calendario_text = lines calendario_input
     
     return (format_calendario calendario_text)
+
+getDiasMes calendar = [31, if (getBissexto calendar) then 29 else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]

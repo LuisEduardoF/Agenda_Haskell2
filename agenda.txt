@@ -1,18 +1,24 @@
 1
 5
+presencial
 8,4
-14,1
-15
+Sala13 do CT 13
+videoconferencia
+14,7
+Google Meet
+meet.google.com/svf-qkcy-tiy15
+presencial
 9,2
+Gabinete da Reitoria
+videoconferencia
 11,1
+Google Meet
+meet.google.com/fpg-saxz-hcmpresencial
 17,1
+Secretaria do Departamento de Informatica
 
 2
 7
-9,2
-
-6
-1
-9,1
-10,2
-14,1
+presencial
+9,3
+Sala do Diretor do Centro de Artes

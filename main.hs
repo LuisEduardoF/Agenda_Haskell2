@@ -27,11 +27,11 @@ option_switch option bst calendario | option == 0 = exit bst
                                     | option == 2 = do_is_free bst calendario
                                     | option == 3 = do_insercao_compromisso bst calendario
                                     | option == 4 = do_insercao_compromisso_breve bst calendario
-                                    --   | option == 5 = do_insercao_compromisso_minimo bst calendario
-                                    --   | option == 6 = do_insercao_compromisso_maximo bst calendario
+                                    | option == 5 = do_insercao_compromisso_minimo bst calendario
+                                    | option == 6 = do_insercao_compromisso_maximo bst calendario
                                     | option == 7 = do_cancelamento_compromisso bst calendario
                                     | option == 8 = do_reagendamento_compromisso bst calendario
-                                    --   | option == 9 = write_bst bst
+                                    | option == 9 = write_agenda bst
                                     | otherwise = return (BST bst)
 
 main_loop (BST bst) calendario = do
@@ -43,6 +43,8 @@ main_loop (BST bst) calendario = do
         main_loop (BST bst) calendario
     else if(newBst == Exit) then do
         return Exit
+    else if(newBst == Save) then do
+        main_loop (BST bst) calendario
     else do
         putStrLn (show(newBst))
         main_loop newBst calendario
