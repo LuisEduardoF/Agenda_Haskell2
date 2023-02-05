@@ -3,22 +3,28 @@
 presencial
 8,4
 Sala13 do CT 13
-videoconferencia
-14,7
-Google Meet
-meet.google.com/svf-qkcy-tiy15
 presencial
-9,2
-Gabinete da Reitoria
-videoconferencia
+14,1
+Sala13 do CT 13
+15
+presencial
 11,1
-Google Meet
-meet.google.com/fpg-saxz-hcmpresencial
+Sala13 do CT 13
+presencial
 17,1
-Secretaria do Departamento de Informatica
+Sala13 do CT 13
 
 2
 7
 presencial
-9,3
-Sala do Diretor do Centro de Artes
+9,2
+Sala13 do CT 13
+
+6
+1
+presencial
+9,1
+Sala13 do CT 13
+presencial
+14,1
+Sala13 do CT 13

@@ -114,10 +114,6 @@ read_reagendamento_compromisso = do
     putStrLn ("Horario Antigo:")
     horario_input <- getLine
     let horario_ini = read horario_input :: Int
-
-    putStrLn ("Duraca Antigo:")
-    duracao_input <- getLine
-    let duracao = read duracao_input :: Int
     
     putStrLn ("Mes Novo:")
     newMes_input <- getLine
@@ -138,17 +134,17 @@ read_reagendamento_compromisso = do
     putStrLn ("Tipo:")
     tipo <- getLine
 
-    return (mes_n, dia_n, horario_ini, duracao, newMes_n, newDia_n, newHorario_ini, newDuracao, tipo)
+    return (mes_n, dia_n, horario_ini, newMes_n, newDia_n, newHorario_ini, newDuracao, tipo)
 
 do_reagendamento_compromisso bst calendario = do
-    (mes_n, dia_n, horario_ini, duracao, newMes_n, newDia_n, newHorario_ini, newDuracao, tipo) <- read_reagendamento_compromisso
+    (mes_n, dia_n, horario_ini, newMes_n, newDia_n, newHorario_ini, newDuracao, tipo) <- read_reagendamento_compromisso
     
-    let newBst = deleteSchedule (Schedule {month = mes_n, day = dia_n, start = horario_ini, duration = duracao}) bst
+    let newBst = deleteSchedule (Schedule {month = mes_n, day = dia_n, start = horario_ini, duration = 0}) bst
     metadata <- read_type tipo
 
     if (bst == newBst) then 
-        insercao_compromisso mes_n dia_n horario_ini duracao tipo metadata calendario bst
-    else if (not (searchSchedule (Schedule {month = mes_n, day = dia_n, start = horario_ini, duration = duracao}) bst)) then
+        insercao_compromisso mes_n dia_n horario_ini newDuracao tipo metadata calendario bst
+    else if (not (searchSchedule (Schedule {month = mes_n, day = dia_n, start = horario_ini, duration = 0}) bst)) then
         insercao_compromisso newMes_n newDia_n newHorario_ini newDuracao tipo metadata calendario bst
     else 
         return (BST bst)
@@ -212,10 +208,10 @@ do_cancelamento_compromisso bst calendario = do
     return (BST (deleteSchedule (Schedule {month = mes_n, day = dia_n, start = horario_ini, duration = 0}) bst))
 
 -- Gravar Agenda
-write_schedule_cmp_p p = (t p) ++ "\n" ++ show (start p) ++ "," ++ show (duration p) ++ "\n" ++ local p ++ "\n" ++ if (t p == "videoconferencia") then link p else ""
+write_schedule_cmp_p p = "\n" ++ (t p) ++ "\n" ++ show (start p) ++ "," ++ show (duration p) ++ "\n" ++ local p ++ if (t p == "videoconferencia") then ("\n" ++ link p) else ""
 write_schedule [] mes dia = ""
-write_schedule (x:xs) mes dia | (month x) /= mes = (if (mes /= 0) then "\n" else "") ++ show (month x) ++ "\n" ++ (write_schedule (x:xs) (month x) dia)
-                              | (day x)   /= dia = show (day x) ++ "\n" ++ (write_schedule (x:xs) mes (day x))
+write_schedule (x:xs) mes dia | (month x) /= mes = (if (mes /= 0) then "\n\n" else "") ++ show (month x)  ++ (write_schedule (x:xs) (month x) dia)
+                              | (day x)   /= dia = "\n" ++ show (day x) ++ (write_schedule (x:xs) mes (day x))
                               | otherwise = (write_schedule_cmp_p x) ++ (write_schedule xs mes dia)
 write_agenda bst = do
     let agenda = inOrder bst
@@ -242,7 +238,10 @@ read_insercao_compromisso_intervalo = do
     prazo_input <- getLine
     let prazo = read prazo_input :: Int
 
-    return (mes_n, dia_n, duracao, prazo)
+    putStrLn ("Tipo:")
+    tipo <- getLine
+
+    return (mes_n, dia_n, duracao, prazo, tipo)
 interval_dia mes dia [x] bst = []
 interval_dia mes dia (x:xs) bst | not (searchSchedule (Schedule {month = mes, day = dia, start = x, duration = 1}) bst) = 0 : interval_dia mes dia xs bst
                                 | otherwise = 1 : interval_dia mes dia xs bst
@@ -273,32 +272,38 @@ getStartByHours hours = ([8..11] ++ [14..17])!!(mod hours 8)
 getDayByHours hours = div hours 8
 
 
-schedule_intervalo_minimo mes dia prazo duracao bst calendar = do
+schedule_intervalo_minimo mes dia prazo duracao tipo metadata bst calendar = do
     let int = interval mes dia prazo calendar bst
     let int_min = (intervalo_minimo int duracao)
     if  (int_min == (-1, 0)) then
-        bst
+        return (BST bst)
     else do
         let hours = locate_interval int_min int 0
         let newDay = (dia + getDayByHours hours)
         let newStart = getStartByHours hours
-        insertSchedule (Schedule {month = mes, day = newDay, start = newStart, duration = duracao}) bst
+        insercao_compromisso mes newDay newStart duracao tipo metadata calendar bst
 
 do_insercao_compromisso_minimo bst calendar = do
-    (mes_n, dia_n, duracao, prazo) <- read_insercao_compromisso_intervalo
-    return (BST (schedule_intervalo_minimo mes_n dia_n prazo duracao bst calendar))
+    (mes_n, dia_n, duracao, prazo, tipo) <- read_insercao_compromisso_intervalo
 
-schedule_intervalo_maximo mes dia prazo duracao bst calendar = do
+    metadata <- read_type tipo
+    
+    schedule_intervalo_minimo mes_n dia_n prazo duracao tipo metadata bst calendar
+
+schedule_intervalo_maximo mes dia prazo duracao tipo metadata bst calendar = do
     let int = interval mes dia prazo calendar bst
     let int_max = (intervalo_maximo int duracao)
     if  (int_max == (-1, 0)) then
-        bst
+        return (BST bst)
     else do
         let hours = locate_interval int_max int 0
         let newDay = (dia + getDayByHours hours)
         let newStart = getStartByHours hours
-        insertSchedule (Schedule {month = mes, day = newDay, start = newStart, duration = duracao}) bst
+        insercao_compromisso mes newDay newStart duracao tipo metadata calendar bst
 
 do_insercao_compromisso_maximo bst calendar = do
-    (mes_n, dia_n, duracao, prazo) <- read_insercao_compromisso_intervalo
-    return (BST (schedule_intervalo_maximo mes_n dia_n prazo duracao bst calendar))
+    (mes_n, dia_n, duracao, prazo, tipo) <- read_insercao_compromisso_intervalo
+
+    metadata <- read_type tipo
+
+    schedule_intervalo_maximo mes_n dia_n prazo duracao tipo metadata bst calendar
